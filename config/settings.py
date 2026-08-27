@@ -33,6 +33,7 @@ DEBUG = os.environ.get(
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
+    ".onrender.com",
 ]
 
 render_hostname = os.environ.get(
