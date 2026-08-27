@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Credit Risk AI</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:
+        #f4f6f8;
+
+    color:
+        #222;
+}
+
+.navbar {
+
+    background:
+        #111827;
+
+    color:
+        white;
+
+    padding:
+        18px 5%;
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+}
+
+.logo {
+
+    font-size:
+        22px;
+
+    font-weight:
+        bold;
+}
+
+.container {
+
+    width:
+        90%;
+
+    max-width:
+        1200px;
+
+    margin:
+        30px auto;
+}
+
+.dashboard {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            3,
+            1fr
+        );
+
+    gap:
+        20px;
+
+    margin-bottom:
+        30px;
+}
+
+.metric {
+
+    background:
+        white;
+
+    padding:
+        22px;
+
+    border-radius:
+        10px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+.metric h3 {
+
+    margin:
+        0 0 10px;
+
+    color:
+        #666;
+
+    font-size:
+        14px;
+}
+
+.metric p {
+
+    margin:
+        0;
+
+    font-size:
+        28px;
+
+    font-weight:
+        bold;
+}
+
+.form-card {
+
+    background:
+        white;
+
+    padding:
+        30px;
+
+    border-radius:
+        10px;
+
+    box-shadow:
+        0 2px 8px
+        rgba(
+            0,
+            0,
+            0,
+            0.08
+        );
+}
+
+.form-card h2 {
+
+    margin-top:
+        0;
+}
+
+.section {
+
+    margin-top:
+        30px;
+}
+
+.section h3 {
+
+    border-bottom:
+        1px solid #ddd;
+
+    padding-bottom:
+        10px;
+}
+
+.grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(
+                220px,
+                1fr
+            )
+        );
+
+    gap:
+        18px;
+}
+
+.field {
+
+    display:
+        flex;
+
+    flex-direction:
+        column;
+}
+
+label {
+
+    font-weight:
+        bold;
+
+    margin-bottom:
+        7px;
+
+    font-size:
+        14px;
+}
+
+input,
+select {
+
+    padding:
+        11px;
+
+    border:
+        1px solid #ccc;
+
+    border-radius:
+        6px;
+
+    font-size:
+        14px;
+
+    width:
+        100%;
+}
+
+button {
+
+    margin-top:
+        30px;
+
+    width:
+        100%;
+
+    padding:
+        15px;
+
+    border:
+        none;
+
+    border-radius:
+        7px;
+
+    background:
+        #111827;
+
+    color:
+        white;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+button:hover {
+
+    opacity:
+        0.9;
+}
+
+.error {
+
+    background:
+        #fee2e2;
+
+    color:
+        #991b1b;
+
+    padding:
+        15px;
+
+    border-radius:
+        7px;
+
+    margin-bottom:
+        20px;
+}
+
+@media (
+    max-width: 700px
+) {
+
+    .dashboard {
+
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="navbar">
+    <div class="navbar">
+
+    <div class="logo">
+        Credit Risk AI
+    </div>
+
+    <div>
+
+        <a
+            href="{% url 'home' %}"
+            style="color:white; margin-right:20px;"
+        >
+            Predictor
+        </a>
+
+        <a
+            href="{% url 'history' %}"
+            style="color:white;"
+        >
+            History
+        </a>
+
+    </div>
+
+</div>
+
+    <div class="logo">
+
+        Credit Risk AI
+
+    </div>
+
+    <div>
+
+        ML Prediction System
+
+    </div>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- ====================================== -->
+    <!-- DASHBOARD METRICS -->
+    <!-- ====================================== -->
+
+    <div class="dashboard">
+
+
+    <div class="metric">
+
+        <h3>
+            ROC-AUC
+        </h3>
+
+        <p>
+            {{ roc_auc }}
+        </p>
+
+    </div>
+
+
+    <div class="metric">
+
+        <h3>
+            PR-AUC
+        </h3>
+
+        <p>
+            {{ pr_auc }}
+        </p>
+
+    </div>
+
+
+    <div class="metric">
+
+        <h3>
+            Features
+        </h3>
+
+        <p>
+            {{ feature_count }}
+        </p>
+
+    </div>
+
+
+    <div class="metric">
+
+        <h3>
+            Predictions
+        </h3>
+
+        <p>
+            {{ prediction_count }}
+        </p>
+
+    </div>
+
+
+    <div class="metric">
+
+        <h3>
+            High Risk
+        </h3>
+
+        <p>
+            {{ high_risk_count }}
+        </p>
+
+    </div>
+
+
+    <div class="metric">
+
+        <h3>
+            Average Risk
+        </h3>
+
+        <p>
+            {{ average_risk }}%
+        </p>
+
+    </div>
+
+
+</div>
+
+
+    {% if error %}
+
+    <div class="error">
+
+        <strong>
+            Error:
+        </strong>
+
+        {{ error }}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ====================================== -->
+    <!-- PREDICTION FORM -->
+    <!-- ====================================== -->
+
+    <div class="form-card">
+
+        <h2>
+            Credit Risk Assessment
+        </h2>
+
+        <p>
+            Enter customer information to generate
+            an ML-based credit risk prediction.
+        </p>
+
+
+        <form
+            method="POST"
+            action="{% url 'predict_risk' %}"
+        >
+
+        {% csrf_token %}
+
+
+        <!-- PERSONAL -->
+
+        <div class="section">
+
+            <h3>
+                Personal Information
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        name="AGE_YEARS"
+                        min="18"
+                        max="100"
+                        step="0.1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <select
+                        name="CODE_GENDER"
+                        required
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="M">
+                            Male
+                        </option>
+
+                        <option value="F">
+                            Female
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- FINANCIAL -->
+
+        <div class="section">
+
+            <h3>
+                Financial Information
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Annual Income
+                    </label>
+
+                    <input
+                        type="number"
+                        name="AMT_INCOME_TOTAL"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Credit Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        name="AMT_CREDIT"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Annuity
+                    </label>
+
+                    <input
+                        type="number"
+                        name="AMT_ANNUITY"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Goods Price
+                    </label>
+
+                    <input
+                        type="number"
+                        name="AMT_GOODS_PRICE"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- FAMILY -->
+
+        <div class="section">
+
+            <h3>
+                Family Information
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Children
+                    </label>
+
+                    <input
+                        type="number"
+                        name="CNT_CHILDREN"
+                        min="0"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Family Members
+                    </label>
+
+                    <input
+                        type="number"
+                        name="CNT_FAM_MEMBERS"
+                        min="1"
+                        step="0.1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Family Status
+                    </label>
+
+                    <select
+                        name="NAME_FAMILY_STATUS"
+                        required
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="Single / not married">
+                            Single
+                        </option>
+
+                        <option value="Married">
+                            Married
+                        </option>
+
+                        <option value="Civil marriage">
+                            Civil Marriage
+                        </option>
+
+                        <option value="Separated">
+                            Separated
+                        </option>
+
+                        <option value="Widow">
+                            Widow
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- EMPLOYMENT -->
+
+        <div class="section">
+
+            <h3>
+                Employment
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Employment Years
+                    </label>
+
+                    <input
+                        type="number"
+                        name="EMPLOYMENT_YEARS"
+                        min="0"
+                        max="70"
+                        step="0.1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Income Type
+                    </label>
+
+                    <select
+                        name="NAME_INCOME_TYPE"
+                        required
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="Working">
+                            Working
+                        </option>
+
+                        <option value="Commercial associate">
+                            Commercial Associate
+                        </option>
+
+                        <option value="Pensioner">
+                            Pensioner
+                        </option>
+
+                        <option value="State servant">
+                            State Servant
+                        </option>
+
+                        <option value="Student">
+                            Student
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Occupation
+                    </label>
+
+                    <input
+                        type="text"
+                        name="OCCUPATION_TYPE"
+                        placeholder="Example: Managers"
+                    >
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- EDUCATION -->
+
+        <div class="section">
+
+            <h3>
+                Education & Housing
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Education
+                    </label>
+
+                    <select
+                        name="NAME_EDUCATION_TYPE"
+                        required
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="Secondary / secondary special">
+                            Secondary Education
+                        </option>
+
+                        <option value="Higher education">
+                            Higher Education
+                        </option>
+
+                        <option value="Incomplete higher">
+                            Incomplete Higher
+                        </option>
+
+                        <option value="Lower secondary">
+                            Lower Secondary
+                        </option>
+
+                        <option value="Academic degree">
+                            Academic Degree
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Housing Type
+                    </label>
+
+                    <select
+                        name="NAME_HOUSING_TYPE"
+                        required
+                    >
+
+                        <option value="">
+                            Select
+                        </option>
+
+                        <option value="House / apartment">
+                            House / Apartment
+                        </option>
+
+                        <option value="With parents">
+                            With Parents
+                        </option>
+
+                        <option value="Municipal apartment">
+                            Municipal Apartment
+                        </option>
+
+                        <option value="Rented apartment">
+                            Rented Apartment
+                        </option>
+
+                        <option value="Office apartment">
+                            Office Apartment
+                        </option>
+
+                        <option value="Co-op apartment">
+                            Co-op Apartment
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- CONTACT -->
+
+        <div class="section">
+
+            <h3>
+                Contact Information
+            </h3>
+
+            <div class="grid">
+
+
+                <div class="field">
+
+                    <label>
+                        Employment Phone
+                    </label>
+
+                    <select
+                        name="FLAG_EMP_PHONE"
+                        required
+                    >
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Work Phone
+                    </label>
+
+                    <select
+                        name="FLAG_WORK_PHONE"
+                        required
+                    >
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Personal Phone
+                    </label>
+
+                    <select
+                        name="FLAG_PHONE"
+                        required
+                    >
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <select
+                        name="FLAG_EMAIL"
+                        required
+                    >
+
+                        <option value="1">
+                            Yes
+                        </option>
+
+                        <option value="0">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <button type="submit">
+
+            Predict Credit Risk
+
+        </button>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
