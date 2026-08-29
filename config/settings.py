@@ -30,15 +30,17 @@ DEBUG = os.environ.get(
     "True"
 ) == "True"
 
+import os
+
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
-    ".onrender.com",
 ]
 
-render_hostname = os.environ.get(
-    "RENDER_EXTERNAL_HOSTNAME"
-)
+render_hostname = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
+
+if render_hostname:
+    ALLOWED_HOSTS.append(render_hostname)
 
 if render_hostname:
     ALLOWED_HOSTS.append(
